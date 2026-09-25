@@ -95,6 +95,17 @@ public class AuthorizationService {
             LocalTime hora,
             boolean dispositivoCorporativo) {
 
+        // Comprueba el departamento original antes de evaluar los nuevos
+        // atributos para impedir que se reasigne un documento ajeno y luego
+        // se modifique desde el departamento del Administrador.
+        if (esAdministrador(usuario)
+                && !mismoDepartamento(usuario, documentoActual)) {
+            return new AuthorizationResult(
+                    false,
+                    "ABAC: El Administrador solo puede modificar documentos de su departamento"
+            );
+        }
+
         AuthorizationResult resultado = autorizar(
                 usuario,
                 "Modificar documento",
@@ -119,5 +130,21 @@ public class AuthorizationService {
                         ? "Modificación permitida"
                         : "ABAC: " + clasificacion.getMotivo()
         );
+    }
+
+    private boolean esAdministrador(Usuario usuario) {
+        return usuario != null
+                && usuario.getRol() != null
+                && "Administrador".equalsIgnoreCase(
+                        usuario.getRol().getNombre());
+    }
+
+    private boolean mismoDepartamento(Usuario usuario, Documento documento) {
+        return usuario.getDepartamento() != null
+                && documento != null
+                && documento.getDepartamento() != null
+                && usuario.getDepartamento().getId() != null
+                && usuario.getDepartamento().getId().equals(
+                        documento.getDepartamento().getId());
     }
 }

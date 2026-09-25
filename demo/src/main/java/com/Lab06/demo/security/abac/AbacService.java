@@ -117,6 +117,13 @@ public class AbacService {
 
             case "DEPARTAMENTO_IGUAL":
 
+                // El Administrador puede consultar de forma transversal,
+                // pero solo modificar documentos de su departamento.
+                if (esAdministrador(usuario)) {
+                    return !"Modificar documento".equalsIgnoreCase(permiso)
+                            || mismoDepartamento(usuario, documento);
+                }
+
                 // Los documentos que pasan la política de Invitado son
                 // públicos; su acceso no depende del departamento interno.
                 if (esInvitado(usuario)) {
@@ -144,6 +151,11 @@ public class AbacService {
             // =========================
 
             case "NIVEL_SEGURIDAD":
+
+                // El Administrador puede consultar todos los niveles.
+                if (esAdministrador(usuario)) {
+                    return true;
+                }
 
                 if (usuario.getNivelSeguridad() == null ||
                         documento.getNivelConfidencialidad() == null) {
@@ -202,6 +214,12 @@ public class AbacService {
 
             case "HORARIO_CONFIDENCIAL":
 
+                // La restricción horaria aplica a usuarios operativos;
+                // no debe ocultar documentos al Administrador.
+                if (esAdministrador(usuario)) {
+                    return true;
+                }
+
                 // Si el documento tiene nivel
                 // menor que 4, no se restringe.
                 if (documento
@@ -233,6 +251,10 @@ public class AbacService {
 
             case "PAIS_IGUAL":
 
+                if (esAdministrador(usuario)) {
+                    return true;
+                }
+
                 // Los documentos públicos pueden consultarse desde fuera
                 // de la organización o del país del propietario.
                 if (esInvitado(usuario)) {
@@ -257,6 +279,10 @@ public class AbacService {
             // =========================
 
             case "DISPOSITIVO_CORPORATIVO":
+
+                if (esAdministrador(usuario)) {
+                    return true;
+                }
 
                 // Solo aplica a documentos
                 // de confidencialidad 4 o superior.
@@ -306,6 +332,20 @@ public class AbacService {
 
                 return true;
         }
+    }
+
+    private boolean esAdministrador(Usuario usuario) {
+        return usuario.getRol() != null
+                && "Administrador".equalsIgnoreCase(
+                        usuario.getRol().getNombre());
+    }
+
+    private boolean mismoDepartamento(Usuario usuario, Documento documento) {
+        return usuario.getDepartamento() != null
+                && documento.getDepartamento() != null
+                && usuario.getDepartamento().getId() != null
+                && usuario.getDepartamento().getId().equals(
+                        documento.getDepartamento().getId());
     }
 
     public AbacResult validarCambioClasificacion(

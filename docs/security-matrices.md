@@ -25,12 +25,12 @@ Todas las siguientes se inicializan con efecto `DENY` y activas. Si una polític
 | Código | Regla evaluada |
 |---|---|
 | `USUARIO_ACTIVO` | El estado del usuario debe ser `ACTIVO`. |
-| `DEPARTAMENTO_IGUAL` | El departamento debe coincidir, excepto para Invitado al consultar documentos públicos. |
-| `NIVEL_SEGURIDAD` | `usuario.nivelSeguridad >= documento.nivelConfidencialidad`. |
-| `PROPIETARIO_MODIFICAR` | Para modificar, el usuario debe ser propietario; Administrador y Gerente están exceptuados. Solo se aplica a la acción de modificación. |
-| `HORARIO_CONFIDENCIAL` | Si el nivel es 4 o 5, la consulta debe ocurrir de 08:00 a 18:00 inclusive. |
-| `PAIS_IGUAL` | El país debe coincidir, excepto para Invitado al consultar documentos públicos. |
-| `DISPOSITIVO_CORPORATIVO` | Para nivel 4 o 5, requiere dispositivo corporativo. La interfaz de demostración envía `X-Device-Type` y permite cambiar entre `CORPORATIVO` y `PERSONAL`. Es un atributo autodeclarado para pruebas, no una verificación confiable de hardware. |
+| `DEPARTAMENTO_IGUAL` | En consulta, Administrador tiene visibilidad transversal. Para modificar, el documento debe pertenecer al departamento del Administrador, tanto antes como después del cambio. Invitado omite esta regla para documentos públicos. |
+| `NIVEL_SEGURIDAD` | `usuario.nivelSeguridad >= documento.nivelConfidencialidad`; Administrador puede consultar todos los niveles. |
+| `PROPIETARIO_MODIFICAR` | Para modificar, el usuario debe ser propietario; Administrador y Gerente están exceptuados. Administrador sigue limitado a su propio departamento. Solo se aplica a la acción de modificación. |
+| `HORARIO_CONFIDENCIAL` | Si el nivel es 4 o 5, la consulta debe ocurrir de 08:00 a 18:00 inclusive; Administrador está exceptuado. |
+| `PAIS_IGUAL` | El país debe coincidir; Administrador está exceptuado e Invitado omite la regla para documentos públicos. |
+| `DISPOSITIVO_CORPORATIVO` | Para nivel 4 o 5, requiere dispositivo corporativo; Administrador está exceptuado. La interfaz de demostración envía `X-Device-Type` y permite cambiar entre `CORPORATIVO` y `PERSONAL`. Es un atributo autodeclarado para pruebas, no una verificación confiable de hardware. |
 | `INVITADO_RESTRINGIDO` | Un Invitado debe ser `EXTERNO`; el documento debe tener nivel máximo 1 y estado `PUBLICADO`. |
 
 En una modificación se autoriza el documento con los atributos nuevos antes de guardarlo. El nuevo nivel no puede superar `usuario.nivelSeguridad`, debe estar entre 1 y 5, y solo Administrador puede reducir el nivel existente. Propietario y fecha de creación no se cambian mediante la edición normal. Aprobar un documento de nivel 1 lo publica; aprobar niveles superiores solo cambia el estado a `APROBADO`.

@@ -87,6 +87,7 @@ Son credenciales de laboratorio, no de producción. El backend cifra con BCrypt 
 
 - Iniciar/cerrar sesión con JWT.
 - Consultar documentos visibles según las políticas aplicables; crear, editar, eliminar y aprobar según los permisos del rol.
+- El Administrador puede consultar documentos de todas las áreas, pero solo editar documentos de su propio departamento. El backend comprueba tanto el departamento actual del documento como el departamento que tendría tras la edición, por lo que no se puede cambiar el área para eludir esta restricción.
 - El Invitado consulta documentos publicados de nivel 1, incluso si pertenecen a otro departamento o país. Solo el Administrador puede reducir la confidencialidad; cualquier modificación debe quedar dentro del nivel de seguridad del usuario.
 - Filtrar documentos por texto y estado; consultar atributos del documento.
 - Consultar y administrar usuarios, roles, departamentos, nivel, contrato y estado (solo usuario autorizado).
@@ -94,6 +95,8 @@ Son credenciales de laboratorio, no de producción. El backend cifra con BCrypt 
 - Cambiar el contexto simulado del dispositivo entre corporativo y personal para demostrar la política ABAC.
 
 El botón de contexto en la barra superior es solo un simulador educativo del atributo; un cliente puede modificar ese encabezado y no debe tratarse como una prueba real del equipo en un despliegue.
+
+Para ver la matriz completa de roles y políticas ABAC, consulta [docs/security-matrices.md](docs/security-matrices.md).
 
 ## Verificación local
 
