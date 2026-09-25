@@ -127,3 +127,7 @@ La documentación del proyecto está en [`docs/`](docs/). El código fuente est�
 - `/api/politicas` para administración de políticas
 
 La mayoría de endpoints necesitan JWT en `Authorization: Bearer <token>`; la autorización también se valida en el backend.
+
+## Video de demostración
+
+[Ver demostración de SecureDocs](https://youtu.be/0Cl2QKzheE0)
